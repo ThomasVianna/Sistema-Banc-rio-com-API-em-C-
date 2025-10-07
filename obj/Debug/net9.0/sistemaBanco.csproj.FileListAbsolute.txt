@@ -19,6 +19,7 @@ C:\Users\thomas.vianna\Documents\VsCode\sistemaBanco\obj\Debug\net9.0\sistemaBan
 C:\Users\thomas.vianna\Documents\VsCode\sistemaBanco\obj\Debug\net9.0\sistemaBanco.csproj.CoreCompileInputs.cache
 C:\Users\thomas.vianna\Documents\VsCode\sistemaBanco\obj\Debug\net9.0\sistemaBanco.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\thomas.vianna\Documents\VsCode\sistemaBanco\obj\Debug\net9.0\sistemaBanco.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\thomas.vianna\Documents\VsCode\sistemaBanco\obj\Debug\net9.0\sistemaBanco.sourcelink.json
 C:\Users\thomas.vianna\Documents\VsCode\sistemaBanco\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\thomas.vianna\Documents\VsCode\sistemaBanco\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\thomas.vianna\Documents\VsCode\sistemaBanco\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
