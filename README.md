@@ -1,6 +1,6 @@
 🏦 Sistema Bancário — API em C#
 
-API desenvolvida em C# (.NET 8) que simula as operações básicas de um banco digital, permitindo consultar, cadastrar e movimentar contas de clientes.
+API desenvolvida em C# (.NET 9) que simula as operações básicas de um banco digital, permitindo consultar, cadastrar e movimentar contas de clientes.
 Gerencia saldo, crédito disponível e histórico de transações (depósitos, saques e transferências).
 
 🧩 Funcionalidades Principais
@@ -70,7 +70,7 @@ Todos os valores devem ser do tipo decimal (float e double não são aceitos)
 
 🚀 Como Rodar o Projeto
 # Clonar o repositório
-git clone https://github.com/usuario/SistemaBancarioAPI.git
+git clone https://github.com/ThomasVianna/Sistema-Banc-rio-com-API-em-C-.git
 
 # Acessar o diretório
 cd SistemaBancarioAPI
@@ -83,11 +83,11 @@ dotnet run
 
 
 Depois, acesse no navegador:
-👉 https://localhost:5001/swagger
+👉 https://localhost:5151/swagger
 
 🧠 Tecnologias Utilizadas
 
-🧩 C# / .NET 8
+🧩 C# / .NET 9
 
 🌐 ASP.NET Core Web API
 
