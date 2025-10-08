@@ -83,7 +83,7 @@ dotnet run
 
 
 Depois, acesse no navegador:
-👉 https://localhost:5151/swagger
+👉 http://localhost:5151/swagger/index.html
 
 🧠 Tecnologias Utilizadas
 
