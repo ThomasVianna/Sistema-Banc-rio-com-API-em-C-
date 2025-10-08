@@ -1,48 +1,114 @@
-/* style.css */
-body {
-    font-family: Arial, sans-serif;
+* {
+    box-sizing: border-box;
     margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4;
+    padding: 0;
 }
 
-header {
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #1a3c34;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar h1 {
+    font-size: 1.5rem;
     text-align: center;
-    margin-bottom: 20px;
+}
+
+.nav-btn {
+    background-color: #2e5c54;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.nav-btn:hover {
+    background-color: #3a7a71;
+}
+
+.nav-btn.active {
+    background-color: #28a745;
 }
 
 main {
+    flex: 1;
+    padding: 40px;
     max-width: 600px;
     margin: 0 auto;
+}
+
+.form-section {
     background: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.form-section.active {
+    display: block;
+}
+
+.form-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #1a3c34;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #1a3c34;
 }
 
-select, input[type="number"] {
+select, input[type="number"], input[type="text"] {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
 }
 
 button {
     background-color: #28a745;
     color: white;
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
 }
 
 button:hover {
@@ -51,8 +117,9 @@ button:hover {
 
 #resultado {
     margin-top: 20px;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 15px;
+    border-radius: 6px;
+    font-size: 1rem;
 }
 
 .erro {
@@ -65,13 +132,17 @@ button:hover {
     color: #155724;
 }
 
-.visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 15px;
+    }
+
+    main {
+        padding: 20px;
+    }
 }

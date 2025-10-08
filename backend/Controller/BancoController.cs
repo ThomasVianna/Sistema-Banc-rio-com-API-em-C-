@@ -16,11 +16,6 @@ namespace ProjetoBanco.Controllers
             _bancoService = bancoService ?? throw new ArgumentNullException(nameof(bancoService));
         }
 
-        /// <summary>
-        /// Obtém a lista de todos os clientes.
-        /// </summary>
-        /// <returns>Lista de clientes.</returns>
-        /// <response code="200">Retorna a lista de clientes.</response>
         [HttpGet("clientes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetClientes()
@@ -29,14 +24,6 @@ namespace ProjetoBanco.Controllers
             return Ok(clientes);
         }
 
-        /// <summary>
-        /// Obtém um cliente específico pelo ID.
-        /// </summary>
-        /// <param name="id">ID do cliente.</param>
-        /// <returns>Cliente encontrado ou erro 404 se não encontrado.</returns>
-        /// <response code="200">Retorna o cliente encontrado.</response>
-        /// <response code="400">ID inválido.</response>
-        /// <response code="404">Cliente não encontrado.</response>
         [HttpGet("clientes/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -53,13 +40,6 @@ namespace ProjetoBanco.Controllers
             return Ok(cliente);
         }
 
-        /// <summary>
-        /// Cria um novo cliente.
-        /// </summary>
-        /// <param name="cliente">Dados do cliente a ser criado.</param>
-        /// <returns>Cliente criado com o ID gerado.</returns>
-        /// <response code="201">Cliente criado com sucesso.</response>
-        /// <response code="400">Dados inválidos ou CPF já cadastrado.</response>
         [HttpPost("clientes")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -90,15 +70,6 @@ namespace ProjetoBanco.Controllers
             }
         }
 
-        /// <summary>
-        /// Realiza um depósito na conta de um cliente.
-        /// </summary>
-        /// <param name="id">ID do cliente.</param>
-        /// <param name="request">Objeto contendo o valor do depósito.</param>
-        /// <returns>Resultado da operação de depósito.</returns>
-        /// <response code="200">Depósito realizado com sucesso.</response>
-        /// <response code="400">Valor inválido.</response>
-        /// <response code="404">Cliente não encontrado.</response>
         [HttpPost("deposito/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -118,9 +89,11 @@ namespace ProjetoBanco.Controllers
             try
             {
                 var sucesso = _bancoService.Depositar(id, request.Valor);
-                return sucesso
-                    ? Ok(new { Mensagem = $"Depósito de R${request.Valor:F2} realizado com sucesso.", SaldoAtual = cliente.Saldo })
-                    : BadRequest(new { Mensagem = "Erro ao realizar o depósito." });
+                if (!sucesso)
+                    return BadRequest(new { Mensagem = "Erro ao realizar o depósito." });
+
+                var clienteAtualizado = _bancoService.GetCliente(id);
+                return Ok(new { Mensagem = $"Depósito de R${request.Valor:F2} realizado com sucesso.", SaldoAtual = clienteAtualizado.Saldo });
             }
             catch (ArgumentException ex)
             {
@@ -128,15 +101,6 @@ namespace ProjetoBanco.Controllers
             }
         }
 
-        /// <summary>
-        /// Realiza um saque na conta de um cliente.
-        /// </summary>
-        /// <param name="id">ID do cliente.</param>
-        /// <param name="request">Objeto contendo o valor do saque.</param>
-        /// <returns>Resultado da operação de saque.</returns>
-        /// <response code="200">Saque realizado com sucesso.</response>
-        /// <response code="400">Valor inválido ou saldo insuficiente.</response>
-        /// <response code="404">Cliente não encontrado.</response>
         [HttpPost("saque/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -153,12 +117,20 @@ namespace ProjetoBanco.Controllers
             if (cliente == null)
                 return NotFound(new { Mensagem = $"Cliente com ID {id} não encontrado." });
 
+            if (cliente.Saldo == 0)
+                return BadRequest(new { Mensagem = "Não é possível realizar saque com saldo zero." });
+
+            if (cliente.Saldo < request.Valor)
+                return BadRequest(new { Mensagem = "Saldo insuficiente para o saque." });
+
             try
             {
                 var sucesso = _bancoService.Sacar(id, request.Valor);
-                return sucesso
-                    ? Ok(new { Mensagem = $"Saque de R${request.Valor:F2} realizado com sucesso.", SaldoAtual = cliente.Saldo })
-                    : BadRequest(new { Mensagem = "Saldo insuficiente ou valor inválido." });
+                if (!sucesso)
+                    return BadRequest(new { Mensagem = "Erro ao realizar o saque." });
+
+                var clienteAtualizado = _bancoService.GetCliente(id);
+                return Ok(new { Mensagem = $"Saque de R${request.Valor:F2} realizado com sucesso.", SaldoAtual = clienteAtualizado.Saldo });
             }
             catch (ArgumentException ex)
             {
@@ -166,14 +138,6 @@ namespace ProjetoBanco.Controllers
             }
         }
 
-        /// <summary>
-        /// Realiza uma transferência entre contas de dois clientes.
-        /// </summary>
-        /// <param name="request">Objeto contendo IDs de origem, destino e valor.</param>
-        /// <returns>Resultado da operação de transferência.</returns>
-        /// <response code="200">Transferência realizada com sucesso.</response>
-        /// <response code="400">Dados inválidos ou saldo insuficiente.</response>
-        /// <response code="404">Conta de origem ou destino não encontrada.</response>
         [HttpPost("transferir")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -200,12 +164,26 @@ namespace ProjetoBanco.Controllers
             if (destino == null)
                 return NotFound(new { Mensagem = $"Conta de destino com ID {request.DestinoId} não encontrada." });
 
+            if (origem.Saldo == 0)
+                return BadRequest(new { Mensagem = "Não é possível realizar transferência com saldo zero na conta de origem." });
+
+            if (origem.Saldo < request.Valor)
+                return BadRequest(new { Mensagem = "Saldo insuficiente para a transferência." });
+
             try
             {
                 var sucesso = _bancoService.Transferir(request.OrigemId, request.DestinoId, request.Valor);
-                return sucesso
-                    ? Ok(new { Mensagem = $"Transferência de R${request.Valor:F2} realizada com sucesso." })
-                    : BadRequest(new { Mensagem = "Erro na transferência. Verifique o saldo ou os dados fornecidos." });
+                if (!sucesso)
+                    return BadRequest(new { Mensagem = "Erro ao realizar a transferência." });
+
+                var origemAtualizada = _bancoService.GetCliente(request.OrigemId);
+                var destinoAtualizado = _bancoService.GetCliente(request.DestinoId);
+                return Ok(new
+                {
+                    Mensagem = $"Transferência de R${request.Valor:F2} realizada com sucesso.",
+                    SaldoOrigem = origemAtualizada.Saldo,
+                    SaldoDestino = destinoAtualizado.Saldo
+                });
             }
             catch (ArgumentException ex)
             {
@@ -214,7 +192,6 @@ namespace ProjetoBanco.Controllers
         }
     }
 
-    // DTOs para as requisições
     public class TransacaoRequest
     {
         [Required(ErrorMessage = "O valor é obrigatório.")]

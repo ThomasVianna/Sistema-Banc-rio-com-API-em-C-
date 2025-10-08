@@ -16,10 +16,10 @@ namespace ProjetoBanco.Services
         private int _nextTransacaoId = 1;
         private readonly object _lock = new();
 
-         public IEnumerable<Cliente> GetClientes()
-         {
-             return _clientes.ToList();
-         }
+        public IEnumerable<Cliente> GetClientes()
+        {
+            return _clientes.ToList();
+        }
 
         public Cliente? GetCliente(int id)
         {
@@ -85,7 +85,7 @@ namespace ProjetoBanco.Services
             lock (_lock)
             {
                 var cliente = GetCliente(id);
-                if (cliente == null || cliente.Saldo + cliente.LimiteCredito < valor)
+                if (cliente == null || cliente.Saldo < valor) // Removido LimiteCredito
                     return false;
 
                 cliente.Saldo -= valor;
@@ -117,7 +117,7 @@ namespace ProjetoBanco.Services
             {
                 var origem = GetCliente(origemId);
                 var destino = GetCliente(destinoId);
-                if (origem == null || destino == null || origem.Saldo + origem.LimiteCredito < valor)
+                if (origem == null || destino == null || origem.Saldo < valor) // Removido LimiteCredito
                     return false;
 
                 origem.Saldo -= valor;
@@ -160,7 +160,6 @@ namespace ProjetoBanco.Services
             if (cpf.Length != 11)
                 return false;
 
-            // Verifica se todos os dígitos são iguais (ex.: 11111111111)
             if (cpf.All(c => c == cpf[0]))
                 return false;
 
